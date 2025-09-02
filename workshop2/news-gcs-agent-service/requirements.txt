@@ -1,0 +1,10 @@
+# news_gcs_agent/requirements.txt
+google-adk
+python-dotenv
+uvicorn
+fastapi
+nltk
+
+
+
+

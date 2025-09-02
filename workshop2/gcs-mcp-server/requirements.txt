@@ -1,0 +1,7 @@
+# gcs_mcp_server/requirements.txt
+fastmcp
+google-cloud-storage
+fastapi
+uvicorn
+
+

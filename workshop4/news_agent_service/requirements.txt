@@ -1,0 +1,7 @@
+google-adk
+litellm
+requests
+python-dotenv
+uvicorn
+fastapi
+nltk

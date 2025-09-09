@@ -13,8 +13,8 @@ def get_news(city: str) -> dict:
    """
    if city.lower() == "bengaluru" or city.lower() == "bangalore":
        return {
-           "headline": "Bengaluru police issue traffic advisory for August 10 amid PM Modi's visit",
-           "content": "The Bengaluru Traffic Police have announced traffic restrictions on key routes on August 10 between 8:30 am and 2:30 pm amid Prime Minister Narendra Modi's scheduled visit to the city.",
+           "headline": "Upto 6 hour long traffic Jams in Bengaluru on 9th September",
+           "content": "Due to extremely heavy rainfall, parts of Bengaluru, including Whitefield and MG Road experienced long traffic jams due to waterlogging.",
        }
    else:
        return {

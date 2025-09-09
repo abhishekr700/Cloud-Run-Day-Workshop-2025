@@ -1,4 +1,4 @@
-# news_gcs_agent/news_assistant_agent/agent.py
+# news_gcs_agent/news_assistant_agent/agent.py test
 import os
 from google.adk.agents import LlmAgent
 from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, StdioConnectionParams, SseConnectionParams, StdioServerParameters
@@ -12,22 +12,22 @@ if not GCS_MCP_SERVER_URL:
     GCS_MCP_SERVER_URL="https://gcs-mcp-server-554461076311.us-central1.run.app"
 
 # Toolset for Google News & Trends MCP Server (using uvx)
-news_and_trends_toolset = MCPToolset(
-    connection_params=StdioConnectionParams(
-        server_params=StdioServerParameters(
-            command='uvx',
-            args=['google-news-trends-mcp@latest'],
-        ),
-        timeout=30 # Increased timeout for potentially longer-running trend queries
-    ),
-    tool_filter=[
-        'get_news_by_keyword',
-        'get_news_by_location',
-        'get_news_by_topic',
-        'get_top_news',
-        'get_trending_keywords',
-    ]
-)
+# news_and_trends_toolset = MCPToolset(
+#     connection_params=StdioConnectionParams(
+#         server_params=StdioServerParameters(
+#             command='uvx',
+#             args=['google-news-trends-mcp@latest'],
+#         ),
+#         timeout=30 # Increased timeout for potentially longer-running trend queries
+#     ),
+#     tool_filter=[
+#         'get_news_by_keyword',
+#         'get_news_by_location',
+#         'get_news_by_topic',
+#         'get_top_news',
+#         'get_trending_keywords',
+#     ]
+# )
 
 # Toolset for the remote GCS MCP Server (using SSE)
 gcs_tools = []
@@ -37,39 +37,56 @@ if GCS_MCP_SERVER_URL:
             # MODIFIED: Connect to the correct /sse endpoint
             url=f"{GCS_MCP_SERVER_URL}/sse",
             headers={"Accept": "text/event-stream, application/json"},
-            timeout=15
+            timeout=30
         ),
         tool_filter=['create_gcs_file', 'list_gcs_files']
     )
     gcs_tools.append(gcs_toolset)
 
-all_tools = [news_and_trends_toolset] + gcs_tools
+all_tools = gcs_tools
 
 root_agent = LlmAgent(
     name="news_gcs_assistant",
     model="gemini-2.5-pro",
     description="Agent to fetch news and trends, and store summaries in GCS.",
-    instruction="""You are a news and trends assistant. You have access to the following tools:
+    instruction="""
+***
 
-    **News & Trends Tools:**
-    1.  `get_news_by_keyword`: Search for news using specific keywords.
-    2.  `get_news_by_location`: Retrieve news relevant to a particular location.
-    3.  `get_news_by_topic`: Get news based on a chosen topic.
-    4.  `get_top_news`: Fetch the top news stories from Google News.
-    5.  `get_trending_keywords`: Return trending keywords from Google Trends for a specified location.
+### System Prompt: Generative News & Storage Assistant
 
-    **Storage Tools:**
-    6.  `create_gcs_file`: Saves text content to a file in Google Cloud Storage. Parameters: `bucket_name`, `destination_blob_name`, `content`.
-    7.  `list_gcs_files`: Lists files in a GCS bucket.
+You are an intelligent assistant whose primary function is to generate summaries of news and trends based on your vast internal knowledge base and to **manage archival of that content** using Google Cloud Storage (GCS).
 
-    **VERY IMPORTANT:** You MUST use ONLY these provided tools. Do NOT write any Python code.
+#### Core Capabilities & Limitations
 
-    **Workflow for saving news:**
-    1.  Use one of the `get_news_*` tools or `get_top_news` with the correct parameters.
-    2.  Summarize the results.
-    3.  Call `create_gcs_file` to save the summary.
+1.  **Knowledge Source (Generative):** When a user asks for "news," "headlines," "trends," or summaries, you must generate this content yourself using your internal knowledge. You must synthesize summaries of major events, topics, and developments up to your last knowledge cutoff.
+2.  **Storage Tools (Actions):** create_gcs_file, list_gcs_files
+
+#### Available Tools
+
+You MUST use ONLY the tools provided in this list.
+
+1.  **`create_gcs_file`**: Saves provided text content to a specific file (blob) within a GCS bucket.
+    * **Parameters**:
+        * `bucket_name` (string): The name of the GCS bucket.
+        * `destination_blob_name` (string): The full path and filename for the new file within the bucket (e.g., `reports/q3_summary.txt`).
+        * `content` (string): The text content to write into the file.
+
+2.  **`list_gcs_files`**: Lists the files (blobs) currently stored within a specified GCS bucket.
+    * **Parameters**:
+        * `bucket_name` (string): The name of the GCS bucket to inspect.
+
+#### Required Workflow: News Generation & Archival
+
+When a user asks you to provide news and save it, you must follow this specific two-step sequence:
+
+1.  **Step 1: Generate Content (Model Task)**
+    * First, use your internal knowledge base to generate the requested news summary, analysis, or list of trends. (For example, if the user asks for "recent AI news," you will synthesize a summary of major AI developments based on your training data).
+    * Present this summary to the user.
+
+2.  **Step 2: Archive Content (Tool Task)**
+    * After generating the content (or if the user explicitly asks to save specific text), you MUST use the `create_gcs_file` tool.
+    * The `content` parameter for `create_gcs_file` MUST be the exact summary or text you generated in Step 1.
     """,
     tools=all_tools,
 )
-
 

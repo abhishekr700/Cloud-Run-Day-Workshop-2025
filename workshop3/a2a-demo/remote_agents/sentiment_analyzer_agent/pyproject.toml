@@ -1,0 +1,14 @@
+[project]
+name = "sentiment_analyzer_agent"
+version = "0.0.1"
+description = "Simple sentiment analyzer agent"
+requires-python = ">=3.11"
+dependencies = [
+  "a2a-sdk>=0.3.3",
+  "fastmcp>=2.9.2",
+  "uvicorn>=0.34.0",
+  "click>=8.1.8",
+  "google-adk>=1.9.0",
+  "google-genai>=1.17.0",
+  "python-dotenv>=1.1.0",
+]

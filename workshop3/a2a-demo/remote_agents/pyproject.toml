@@ -1,0 +1,10 @@
+[project]
+name = "remote-agents"
+version = "0.0.1"
+description = "Remote Agents"
+requires-python = ">=3.11"
+dependencies = [
+  "google-adk[a2a]>=1.9.0",
+  "google-genai>=1.17.0",
+  "python-dotenv>=1.1.0",
+]

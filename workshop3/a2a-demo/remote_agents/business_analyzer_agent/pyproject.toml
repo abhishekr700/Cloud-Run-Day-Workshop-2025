@@ -1,0 +1,18 @@
+[project]
+name = "business-analyzer-agent"
+version = "0.1.0"
+description = "An agent that analyzes the business impact of news articles."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "click>=8.1.8",
+    "httpx>=0.28.1",
+    "pydantic>=2.10.6",
+    "dotenv>=0.9.9",
+    "crewai>=0.118.0",
+    "sse-starlette>=2.3.3",
+    "jwcrypto>=1.5.6",
+    "pyjwt>=2.10.1",
+    "a2a-sdk>=0.2.16",
+    "a2a-sdk[http-server]>=0.2.16",
+]

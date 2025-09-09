@@ -3,7 +3,6 @@ google-adk
 python-dotenv
 uvicorn
 fastapi
-nltk
 
 
 

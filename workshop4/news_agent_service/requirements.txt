@@ -1,4 +1,4 @@
-google-adk
+google-adk==1.13
 litellm
 requests
 python-dotenv

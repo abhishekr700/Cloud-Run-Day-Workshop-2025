@@ -11,24 +11,6 @@ if not GCS_MCP_SERVER_URL:
     print("WARNING: GCS_MCP_SERVER_URL environment variable not set. The tool for GCS operations will not be available.")
     GCS_MCP_SERVER_URL="https://gcs-mcp-server-554461076311.us-central1.run.app"
 
-# Toolset for Google News & Trends MCP Server (using uvx)
-# news_and_trends_toolset = MCPToolset(
-#     connection_params=StdioConnectionParams(
-#         server_params=StdioServerParameters(
-#             command='uvx',
-#             args=['google-news-trends-mcp@latest'],
-#         ),
-#         timeout=30 # Increased timeout for potentially longer-running trend queries
-#     ),
-#     tool_filter=[
-#         'get_news_by_keyword',
-#         'get_news_by_location',
-#         'get_news_by_topic',
-#         'get_top_news',
-#         'get_trending_keywords',
-#     ]
-# )
-
 # Toolset for the remote GCS MCP Server (using SSE)
 gcs_tools = []
 if GCS_MCP_SERVER_URL:
